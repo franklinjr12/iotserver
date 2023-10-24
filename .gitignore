@@ -1,4 +1,1 @@
-build/compile_commands.json
-build/*.exe
-build/CMakeFiles/
-build/.ninja*
+build
