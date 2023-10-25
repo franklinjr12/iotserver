@@ -1,11 +1,9 @@
-#include <boost/asio.hpp>
+#include <boost/thread.hpp>
 #include <cctype>
 #include <cstdio>
 
 #include "deviceheader.h"
 #include "receiver.hpp"
-
-using boost::asio::ip::tcp;
 
 int main(void) {
   printf("Hello, World!\n");
@@ -17,10 +15,17 @@ int main(void) {
   // printf("DeviceHeader: company_id=%d device_id=%d message_type=%d
   // size=%ld\n",
   //  dh.company_id, dh.device_id, dh.message_type, sizeof(dh));
-
-  Receiver r;
-  init_receiver_default(r);
-  receiver_loop(r);
+  while (true) {
+    try {
+      Receiver r;
+      init_receiver_default(r);
+      receiver_loop(r);
+    } catch (const std::exception& e) {
+      fprintf((FILE*)stdout, "%s\n", e.what());
+      // sleep for 1s
+      boost::this_thread::sleep_for(boost::chrono::seconds(1));
+    }
+  }
 
   return 0;
 }
