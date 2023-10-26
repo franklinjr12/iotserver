@@ -5,6 +5,12 @@
 #include "deviceheader.h"
 #include "receiver.hpp"
 
+void header_handler(void* data, int size) {
+  DeviceHeader* dh = (DeviceHeader*)data;
+  printf("DeviceHeader: company_id=%d device_id=%d message_type=%d size=%d\n",
+         dh->company_id, dh->device_id, dh->message_type, size);
+}
+
 int main(void) {
   printf("Hello, World!\n");
 
@@ -18,6 +24,9 @@ int main(void) {
   while (true) {
     try {
       Receiver r;
+
+      // r.message_handlers.at(MessageHandlers::DEVICE_HEADER) = header_handler;
+      r.message_handlers.insert(r.message_handlers.begin(), header_handler);
       init_receiver_default(r);
       receiver_loop(r);
     } catch (const std::exception& e) {

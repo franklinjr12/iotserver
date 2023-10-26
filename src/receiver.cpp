@@ -101,27 +101,6 @@ int init_receiver_default(Receiver& r) {
   r.port = 1234;
   r.socket_type = SocketType::TCP;
   r.debug = true;
-  int sock;
-  struct sockaddr_in name;
-
-  /* Create the socket. */
-  sock = socket(PF_INET, SOCK_STREAM, 0);
-  if (sock < 0) {
-    perror("socket");
-    return -1;
-  }
-
-  /* Give the socket a name. */
-  name.sin_family = AF_INET;
-  name.sin_port = htons(r.port);
-  name.sin_addr.s_addr = htonl(INADDR_ANY);
-  if (bind(sock, (struct sockaddr*)&name, sizeof(name)) < 0) {
-    perror("bind");
-    return -2;
-  }
-  r.sock = sock;
-  r.name = name;
-
   return 0;
 }
 
@@ -136,6 +115,7 @@ void receiver_loop(Receiver& r) {
   while (true) {
     try {
       tcp::socket socket(io_context);
+      printf("Waiting for connection\n");
       acceptor.accept(socket);
       size_t received_bytes = socket.available();
       if (received_bytes > 0) {
@@ -155,16 +135,19 @@ void receiver_loop(Receiver& r) {
           }
           printf("\n");
         }
+        r.message_handlers.at(MessageHandlers::DEVICE_HEADER)((void*)bytes,
+                                                              received_bytes);
       }
 
       char response[MAXSIZE];
-      sprintf(response, "%d", received_bytes);
+      sprintf(response, "%ld", received_bytes);
 
       // send response
       boost::system::error_code ignored_error;
       boost::asio::write(socket, boost::asio::buffer(response), ignored_error);
     } catch (const std::exception& e) {
       fprintf((FILE*)stdout, "%s\n", e.what());
+
       // sleep for 1s
       boost::this_thread::sleep_for(boost::chrono::seconds(1));
     }
