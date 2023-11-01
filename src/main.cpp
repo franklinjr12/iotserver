@@ -30,7 +30,8 @@ int main(void) {
       init_receiver_default(r);
       receiver_loop(r);
     } catch (const std::exception& e) {
-      fprintf((FILE*)stdout, "%s\n", e.what());
+      fprintf((FILE*)stdout, "Exception: %s\n", e.what());
+      printf("Exception: %s\n", e.what());
       // sleep for 1s
       boost::this_thread::sleep_for(boost::chrono::seconds(1));
     }

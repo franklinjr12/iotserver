@@ -17,3 +17,5 @@ cmake --build build && ./build/app.exe
 
 # For compiling examples
 g++ -I$BOOSTFOLDER -L$BOOSTFOLDER/lib -o build/connect.exe examples/connect.cpp -lboost_system -pthread && ./build/connect.exe
+
+g++ -I/home/franklin/iotserver/include -I$BOOSTFOLDER -L$BOOSTFOLDER/lib src/main.cpp src/receiver.cpp -lboost_system -pthread -g

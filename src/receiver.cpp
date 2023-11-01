@@ -131,12 +131,12 @@ void receiver_loop(Receiver& r) {
             if (isprint(c) || c == ' ')
               printf("%c", bytes[i]);
             else
-              printf("0x%02X", bytes[i]);
+              printf("0x%02X ", bytes[i]);
           }
           printf("\n");
         }
-        r.message_handlers.at(MessageHandlers::DEVICE_HEADER)((void*)bytes,
-                                                              received_bytes);
+        // r.message_handlers.at(MessageHandlers::DEVICE_HEADER)((void*)bytes,
+        //                                                       received_bytes);
       }
 
       char response[MAXSIZE];
@@ -146,8 +146,8 @@ void receiver_loop(Receiver& r) {
       boost::system::error_code ignored_error;
       boost::asio::write(socket, boost::asio::buffer(response), ignored_error);
     } catch (const std::exception& e) {
-      fprintf((FILE*)stdout, "%s\n", e.what());
-
+      fprintf((FILE*)stdout, "Exception: %s\n", e.what());
+      printf("Exception:%s\n", e.what());
       // sleep for 1s
       boost::this_thread::sleep_for(boost::chrono::seconds(1));
     }

@@ -20,3 +20,6 @@ link_directories(${BOOSTFOLDER}/stage/lib)
 add_executable(app.exe ${SRCS})
 target_link_libraries (app.exe ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(app.exe boost_system boost_thread boost_chrono)
+
+# add debug flags to the executable
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -O0")
